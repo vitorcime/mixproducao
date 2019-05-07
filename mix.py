@@ -23,19 +23,22 @@ def mixproducao(num_produtos, num_recursos, produtos, disp_rec):
     obj_funcao = LinExpr()
     for i in range(0, num_produtos):
         variaveis.append(m.addVar(vtype = GRB.INTEGER , name = produtos[i].nome_produto()))
-    
-    for v in m.getVars():
+    i = 0
+    for v in variaveis:
         obj_funcao += (v * produtos[i].get_preco())
+        i += 1
     m.setObjective(obj_funcao, GRB.MAXIMIZE)
     
     for y in range(0, num_recursos):
         obj_restricao = LinExpr()
         i = 0
-        for v in m.getVars():
+        for v in variaveis:
             obj_restricao += (v * produtos[i].get_quantidade(y))
             i += 1
         m.addConstr(obj_restricao, GRB.LESS_EQUAL, disp_rec[y], "c" + str(y))
+    
     m.optimize()
+    
     for v in m.getVars():
         print('%s %g' % (v.varName, v.x))
 
