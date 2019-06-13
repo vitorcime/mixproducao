@@ -6,6 +6,8 @@ class Produto:
         self.produto = produto
         self.quantidade = []
         self.preco = 0
+        self.minimo = 0.0
+        self.maximo = GRB.INFINITY
     def nome_produto(self):
         return self.produto
     def set_quantidade(self, quantidade):
@@ -16,13 +18,21 @@ class Produto:
         return self.preco
     def get_quantidade(self, index):
         return self.quantidade[index]
+    def set_minino(self, min):
+        self.minimo = min
+    def set_maximo(self, max):
+        self.maximo = max
+    def get_minimo(self):
+        return self.minimo
+    def get_maximo(self):
+        return self.maximo
 
 def mixproducao(num_produtos, num_recursos, produtos, disp_rec):
     m = Model("mixproducao")
     variaveis = []
     obj_funcao = LinExpr()
     for i in range(0, num_produtos):
-        variaveis.append(m.addVar(vtype = GRB.INTEGER , name = produtos[i].nome_produto()))
+        variaveis.append(m.addVar(produtos[i].get_minimo(), produtos[i].get_maximo(), 0.0, GRB.CONTINUOUS , produtos[i].nome_produto(), None))
     i = 0
     for v in variaveis:
         obj_funcao += (v * produtos[i].get_preco())
@@ -63,7 +73,20 @@ def main():
    for i in range(0, num_produtos):
        for y in range(0, num_recursos):
               produtos[i].set_quantidade(input("Quanto de " + nome_rec[y] + " é usado em " + produtos[i].nome_produto() + " :"))
-        
+   
+   escolha_minima = raw_input("Os produtos terao producao minima?")
+   escolha_maxima = raw_input("Os produtos terao producao maxima?")
+
+   if(escolha_minima == "sim"):
+       for i in range(0, num_produtos):
+           produtos[i].set_minino(input("Qual o minimo de producao para " + (produtos[i].nome_produto()) + ": "))
+
+   if(escolha_maxima == "sim"):
+       for i in range(0, num_produtos):
+           maximo = input("Qual o maximo de producao para " + (produtos[i].nome_produto()) + ": ")
+           if(maximo >= 0 ):
+               produtos[i].set_maximo(maximo)
+
    mixproducao(num_produtos, num_recursos, produtos, disp_rec)
 
 if __name__ == "__main__":
