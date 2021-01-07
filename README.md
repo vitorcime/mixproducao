@@ -1,2 +1,2 @@
 # mixproducao
-Trabalho feito na matéria de pesquisa operacional
+Trabalho feito na matéria de pesquisa operacional para o cálculo de otimização .
